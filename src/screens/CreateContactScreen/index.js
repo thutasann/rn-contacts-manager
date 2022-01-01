@@ -18,7 +18,7 @@ const CreateContactScreen = () => {
 
     const [ localFile, setLocalFile ] = useState(null);
     const sheetRef = useRef(null); // bottom sheet image picker
-
+    const [ uploading, setIsUploading ] = useState(false);
     const [ form, setForm ] = useState({});
     const { navigate } = useNavigation();
 
