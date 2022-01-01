@@ -6,7 +6,7 @@ import Container from '../common/Container';
 import Icon from '../common/Icon';
 import Message from '../common/Message';
 import styles from './styles';
-import { CREATE_CONTACTS } from '../../constants/routeNames';
+import { CREATE_CONTACTS, CONTACT_DETAIL } from '../../constants/routeNames';
 
 const ContactsComponent = ({ modalVisible, data, loading, setModalVisible, sortBy }) => {
     
@@ -24,12 +24,13 @@ const ContactsComponent = ({ modalVisible, data, loading, setModalVisible, sortB
     };
 
     const renderItem = ({item}) => {
-        console.log(`item`, item);
 
         const { contact_picture, first_name, last_name, phone_number, country_code } = item;
 
         return(
-            <TouchableOpacity style={styles.itemContainer}>
+            <TouchableOpacity style={styles.itemContainer} onPress={()=>{
+                navigate(CONTACT_DETAIL, {item});
+            }}>
                 <View style={styles.item}>
                     {
                         contact_picture ? (

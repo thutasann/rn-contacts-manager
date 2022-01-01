@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallBack } from 'react'
+import React, { useEffect, useState, useContext, useRef } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import Icon from '../../components/common/Icon';
@@ -7,6 +7,7 @@ import Button from '../../components/common/button';
 import { GlobalContext } from '../../context/Provider';
 import getContacts from '../../context/actions/contacts/getContacts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CONTACT_DETAIL } from '../../constants/routeNames';
 
 
 
@@ -15,6 +16,7 @@ const ContactScreen = () => {
     const [ sortBy, setSortBy ] = useState(null);
     const { navigate, setOptions, toggleDrawer } = useNavigation();
     const [ modalVisible, setModalVisible ] = useState(false);
+    const contactsRef = useRef([]); // component did update using hooks
 
     const { 
         contactsDispatch,
@@ -27,6 +29,7 @@ const ContactScreen = () => {
     },[]);
 
 
+    // get settings from AsynStorage
     const getSettings = async () => {
         const sortPref = await AsyncStorage.getItem('sortBy');
 
@@ -35,14 +38,28 @@ const ContactScreen = () => {
         }
     };
 
+    // component did update using hooks
+    useEffect(() => {
+        const prev = contactsRef.current;
+
+        contactsRef.current = data;
+
+        const newList = contactsRef.current;
+
+        if(newList.length - prev.length === 1){
+            const newContact = newList.find(
+                (item) => !prev.map((i) => i.id).includes(item.id)
+            );
+            navigate(CONTACT_DETAIL, {item: newContact});
+        }
+
+    }, [data.lenght]);
+
     useFocusEffect(
-        useCallBack(() => {
+        React.useCallback(() => {
             getSettings();
-
-            return () => {
-
-            }
-        }, [])
+            return () => {};
+        }, []),
     );
 
 

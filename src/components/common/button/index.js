@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Text, TextInput, ActivityIndicator } from 'reac
 import colors from '../../../asssets/theme/colors'
 import styles from './styles'
 
-const Button = ({ onPress, title, secondary, primary, danger, disabled, loading }) => {
+const Button = ({ onPress, title, secondary, primary, danger, disabled, loading, style }) => {
 
     const getBgColor = () =>{
         if(disabled){
@@ -21,7 +21,7 @@ const Button = ({ onPress, title, secondary, primary, danger, disabled, loading 
     };
     
     return (
-        <TouchableOpacity onPress={onPress} disabled={disabled} style={[styles.wrapper, {backgroundColor: getBgColor()} ]}>
+        <TouchableOpacity onPress={onPress} disabled={disabled} style={[styles.wrapper, style, {backgroundColor: getBgColor()} ]}>
             <View style={[styles.loaderSection]}>
                 {
                     loading && <ActivityIndicator color={primary? colors.secondary : colors.primary} />

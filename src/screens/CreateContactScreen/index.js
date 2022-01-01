@@ -9,6 +9,7 @@ import { CONTACT_LIST } from '../../constants/routeNames';
 
 const CreateContactScreen = () => {
 
+
     const { 
         contactsDispatch,
         contactsState:{
@@ -18,10 +19,12 @@ const CreateContactScreen = () => {
 
     const [ localFile, setLocalFile ] = useState(null);
     const sheetRef = useRef(null); // bottom sheet image picker
-    const [ uploading, setIsUploading ] = useState(false);
+    const [ uploading, setUploading ] = useState(false); // for firebase storage
     const [ form, setForm ] = useState({});
     const { navigate } = useNavigation();
 
+
+    // form's onChangeText
     const onChangeText = ({ name, value }) => {
         setForm({
             ...form,
@@ -29,6 +32,7 @@ const CreateContactScreen = () => {
         });
     };
 
+    // Form onSubmit
     const onSubmit = () => {
         createContact(form)(contactsDispatch)(() =>  {
             navigate(CONTACT_LIST);
@@ -57,6 +61,7 @@ const CreateContactScreen = () => {
         });
     };
 
+    // Image picker file selected
     const onFileSelected = (image) => {
         closeSheet();
         setLocalFile(image);
@@ -68,7 +73,7 @@ const CreateContactScreen = () => {
             setForm={setForm}
             onChangeText={onChangeText}
             onSubmit={onSubmit}
-            loading={loading}
+            loading={loading || uploading}
             error={error}
             toggleValueChange={toggleValueChange}
             sheetRef={sheetRef}
