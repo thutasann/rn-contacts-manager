@@ -68,12 +68,12 @@ const AppModal = ({ closeOnTouchOutside, title, modalBody, modalFooter, modalVis
     )
 };
 
-AppModal.PropTypes = {
-    closeOnTouchOutside: PropTypes.bool,
-};
+// AppModal.propTypes = {
+//     closeOnTouchOutside: propTypes.bool,
+// };
 
-AppModal.defaultProps = {
-    closeOnTouchOutside: true,
-};
+// AppModal.defaultProps = {
+//     closeOnTouchOutside: true,
+// };
 
 export default AppModal

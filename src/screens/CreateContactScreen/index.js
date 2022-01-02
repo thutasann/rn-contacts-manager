@@ -1,10 +1,12 @@
-import React, { useContext, useState, useRef } from 'react'
-import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useState, useRef, useEffect } from 'react'
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Text, View } from 'react-native'
 import CreateContactComponent from '../../components/CreateContactComponent'
 import createContact from '../../context/actions/contacts/createContact';
 import { GlobalContext } from '../../context/Provider';
-import { CONTACT_LIST } from '../../constants/routeNames';
+import { CONTACT_DETAIL, CONTACT_LIST } from '../../constants/routeNames';
+import countryCodes from '../../utils/countryCodes';
+import editContact from '../../context/actions/contacts/editContact';
 
 
 const CreateContactScreen = () => {
@@ -21,7 +23,57 @@ const CreateContactScreen = () => {
     const sheetRef = useRef(null); // bottom sheet image picker
     const [ uploading, setUploading ] = useState(false); // for firebase storage
     const [ form, setForm ] = useState({});
-    const { navigate } = useNavigation();
+    const { navigate, setOptions } =  useNavigation();
+    const { params } = useRoute();
+
+    // For update
+    useEffect(() => {
+
+        if(params?.contact){
+
+            setOptions({
+                title: "Update Contact"
+            });
+
+            const { 
+                first_name: firstName,
+                last_name: lastName,
+                phone_number: phoneNumber,
+                is_favorite: isFavorite,
+                country_code: countryCode,
+            } = params?.contact;
+
+            setForm((prev) =>{
+                return {
+                    ...prev, 
+                    firstName, 
+                    lastName, 
+                    phoneNumber, 
+                    isFavorite, 
+                    phoneCode: countryCode
+                };
+            });
+
+            const country = countryCodes.find((item) =>{
+                return item.value.replace("+", '') === countryCode
+            });
+
+            if(country){
+                setForm((prev) =>{
+                    return {
+                        ...prev, 
+                        countryCode: country.key.toUpperCase()
+                    };
+                });
+            }
+
+        }
+
+        if(params?.contact?.contact_picture){
+            setLocalFile(params?.contact?.contact_picture);
+        }
+
+    }, []);
 
 
     // form's onChangeText
@@ -34,9 +86,16 @@ const CreateContactScreen = () => {
 
     // Form onSubmit
     const onSubmit = () => {
-        createContact(form)(contactsDispatch)(() =>  {
-            navigate(CONTACT_LIST);
-        })
+        if(params?.contact){ // from contact detail (params) to edit contact
+            editContact(form, params?.contact.id)(contactsDispatch)((item) =>  {
+                navigate(CONTACT_DETAIL, {item});
+            });
+        }
+        else{
+            createContact(form)(contactsDispatch)(() =>  {
+                navigate(CONTACT_LIST);
+            });
+        }
     };
 
     // close image picker

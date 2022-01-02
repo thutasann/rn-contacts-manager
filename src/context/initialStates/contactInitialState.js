@@ -11,7 +11,7 @@ export default {
         loading: false,
     },
 
-    deleteContacts: {
+    deleteContact: {
         data: {},
         error: null,
         loading: false,

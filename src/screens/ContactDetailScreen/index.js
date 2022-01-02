@@ -1,11 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import ContactDetailComponent from '../../components/ContactDetailComponent';
 import Icon from '../../components/common/Icon';
 import colors from '../../asssets/theme/colors';
+import { GlobalContext } from '../../context/Provider';
+import deleteContact from '../../context/actions/contacts/deleteContact';
+import { navigate } from '../../navigation/SideMenu/RootNavigator';
+import { CONTACT_LIST } from '../../constants/routeNames';
 
 const ContactDetailScreen = () => {
+
+    const {
+    contactsDispatch,
+        contactsState: {
+            deleteContact: {loading},
+        },
+    } = useContext(GlobalContext);
 
     const { params: {item = {}} = {} } = useRoute();
 
@@ -27,20 +38,42 @@ const ContactDetailScreen = () => {
                                 />
                             </TouchableOpacity>
                             
-                            <TouchableOpacity style={{ paddingLeft: 10, }}>
-                                <Icon 
-                                    color={colors.grey}
-                                    name="delete"
-                                    size={21} 
-                                    type="material" 
-                                />
+                            <TouchableOpacity style={{ paddingLeft: 20, }} onPress={() =>{
+                                
+                                Alert.alert("Delete!", "Are you sure you want to delete " + item.first_name, [
+                                    {
+                                        text: "Cancel",
+                                        onPress: () => {}
+                                    },
+                                    {
+                                        text: "Delete",
+                                        onPress: () => {
+                                            deleteContact(item.id)(contactsDispatch)(() =>{
+                                                navigate(CONTACT_LIST);
+                                            });
+                                        }
+                                    }
+                                ]);
+                            }}>
+                                {
+                                    loading ? (
+                                        <ActivityIndicator size="small" color={colors.primary} />
+                                    ): (
+                                        <Icon 
+                                            color={colors.grey}
+                                            name="delete"
+                                            size={21} 
+                                            type="material" 
+                                        />
+                                    )
+                                }
                             </TouchableOpacity>
                         </View>
                     );
                 },
             });
         }
-    }, [item]);
+    }, [item, loading]);
 
     return (    
         <ContactDetailComponent

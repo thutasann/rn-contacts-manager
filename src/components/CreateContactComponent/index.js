@@ -19,7 +19,7 @@ const CreateContactComponent = ({ toggleValueChange, loading, error, setForm, on
                 <Image
                     widht={150}
                     height={150}
-                    source={{ uri: localFile?.uri || DEFAULT_IMAGE_URI }}
+                    source={{ uri: localFile?.uri || localFile || DEFAULT_IMAGE_URI }}
                     style={styles.imageView}
                 />
                 
@@ -29,6 +29,7 @@ const CreateContactComponent = ({ toggleValueChange, loading, error, setForm, on
                 
                 <Input
                     label="First Name"
+                    value={form.firstName || ''}
                     placeholder="Enter First name"
                     onChangeText={(value) => {
                         onChangeText({
@@ -41,6 +42,7 @@ const CreateContactComponent = ({ toggleValueChange, loading, error, setForm, on
                 <Input
                     label="Last Name"
                     placeholder="Enter Last name"
+                    value={form.lastName || ''}
                     onChangeText={(value)=> {
                         onChangeText({
                             name: "lastName",
@@ -74,6 +76,7 @@ const CreateContactComponent = ({ toggleValueChange, loading, error, setForm, on
                     }
                     keyboardType="numeric"
                     label="Phone Number"
+                    value={form.phoneNumber || ''}
                     placeholder="Enter Phone number"
                     iconPosition="left"
                     style={{ paddingLeft: 10 }}
